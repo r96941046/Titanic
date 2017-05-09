@@ -11,7 +11,8 @@ Prerequisites for running [the notebook](https://github.com/r96941046/Titanic/bl
 3. Install other Python dependencies
 
 ```
-conda create --name fresh python=3
+conda create --name titanic python=3
+source activate titanic
 conda install jupyter
 conda install pandas
 conda install seaborn
