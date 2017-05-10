@@ -376,10 +376,10 @@ train.describe(include=['O'])
     </tr>
     <tr>
       <th>top</th>
-      <td>Collyer, Mrs. Harvey (Charlotte Annie Tate)</td>
+      <td>Carter, Mrs. Ernest Courtenay (Lilian Hughes)</td>
       <td>male</td>
       <td>1601</td>
-      <td>B96 B98</td>
+      <td>C23 C25 C27</td>
       <td>S</td>
     </tr>
     <tr>
@@ -417,7 +417,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x169ebafd0>
+    <seaborn.axisgrid.FacetGrid at 0x115ebf4a8>
 
 
 
@@ -509,7 +509,7 @@ grid_1.map(plt.hist, 'Age', bins=20)
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x169f69f28>
+    <seaborn.axisgrid.FacetGrid at 0x108e0aeb8>
 
 
 
@@ -536,7 +536,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16a63ea90>
+    <seaborn.axisgrid.FacetGrid at 0x1164d1a58>
 
 
 
@@ -715,7 +715,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16a1f8668>
+    <seaborn.axisgrid.FacetGrid at 0x115eb6cf8>
 
 
 
@@ -829,7 +829,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16a520cf8>
+    <seaborn.axisgrid.FacetGrid at 0x1169022b0>
 
 
 
@@ -1171,7 +1171,7 @@ facet.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x169eba588>
+    <seaborn.axisgrid.FacetGrid at 0x116b88b38>
 
 
 
@@ -1189,7 +1189,7 @@ grid_3.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16aa961d0>
+    <seaborn.axisgrid.FacetGrid at 0x116adfa90>
 
 
 
@@ -1230,6 +1230,7 @@ Binning/Converting Numerical to Categorical Variable, reducing noise or non-line
 ```python
 # get bin from train data
 train['AgeBin'], age_bin = pd.cut(train['Age'], 5, retbins=True)
+train['AgeBin'] = train['AgeBin'].astype(str)
 age_group = train[['AgeBin', 'Survived']].groupby(['AgeBin'], as_index=False).mean()
 age_group
 ```
@@ -1282,6 +1283,7 @@ age_group
 ```python
 # apply the bin to test data
 test['AgeBin'] = pd.cut(test['Age'], bins=age_bin)
+test['AgeBin'] = test['AgeBin'].astype(str)
 ```
 
 
@@ -1835,13 +1837,18 @@ test = test.drop(['Name'], axis=1)
 complete = [train, test]
 ```
 
+
+```python
+
+```
+
 #### 6. Embarked
 
     - Embarked C has higher survival rate, include feature Embarked
     - With embarked C, male has higher survival rate than female, strange, embarked might relate to Pclass
     - With Embarked = 'C' or 'S', survival rate is higher for higher fare
     - With Embarked = 'Q' survival rate is low
-    - use most frequent value to replace NA
+    - passengers with high fare rate tends to embark at port 'C', use that to fill NA 
 
 
 ```python
@@ -1853,12 +1860,12 @@ grid_4.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16b71b828>
+    <seaborn.axisgrid.FacetGrid at 0x1177d5e48>
 
 
 
 
-![png](output_55_1.png)
+![png](output_56_1.png)
 
 
 
@@ -1871,12 +1878,12 @@ grid_5.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x16b84d0f0>
+    <seaborn.axisgrid.FacetGrid at 0x1177d5be0>
 
 
 
 
-![png](output_56_1.png)
+![png](output_57_1.png)
 
 
 
@@ -1920,21 +1927,86 @@ train[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean()
 
 
 ```python
-frequent_port = train['Embarked'].mode()[0]
-frequent_port
+sns.factorplot(
+    x='Embarked',
+    y='Fare',
+    data=train
+)
 ```
 
 
 
 
-    'S'
+    <seaborn.axisgrid.FacetGrid at 0x1178c13c8>
+
+
+
+
+![png](output_59_1.png)
+
+
+
+```python
+train.loc[(train['Embarked'].isnull())]
+```
+
+
+
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+      <th>IsAlone</th>
+      <th>Title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>61</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>113572</td>
+      <td>80.0</td>
+      <td>B28</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>829</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>113572</td>
+      <td>80.0</td>
+      <td>B28</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 
 
 
 ```python
-for dataset in complete:
-    dataset['Embarked'] = dataset['Embarked'].fillna(frequent_port)
+# high fares, let them be Embarked = 'C'
+train.loc[(train['Embarked'].isnull()), 'Embarked'] = 'C'
 ```
 
 
@@ -2055,6 +2127,7 @@ test['Fare'].fillna(test['Fare'].dropna().median(), inplace=True)
 # qcut() for quantity cut
 
 train['FareBin'], fare_bin = pd.qcut(train['Fare'], 4, retbins=True)
+train['FareBin'] = train['FareBin'].astype(str)
 fare_group = train[['FareBin', 'Survived']].groupby(['FareBin'], as_index=False).mean()
 fare_group
 ```
@@ -2074,23 +2147,23 @@ fare_group
   <tbody>
     <tr>
       <th>0</th>
-      <td>[0, 7.91]</td>
-      <td>0.197309</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>(7.91, 14.454]</td>
-      <td>0.303571</td>
-    </tr>
-    <tr>
-      <th>2</th>
       <td>(14.454, 31]</td>
       <td>0.454955</td>
     </tr>
     <tr>
-      <th>3</th>
+      <th>1</th>
       <td>(31, 512.329]</td>
       <td>0.581081</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>(7.91, 14.454]</td>
+      <td>0.303571</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>[0, 7.91]</td>
+      <td>0.197309</td>
     </tr>
   </tbody>
 </table>
@@ -2101,6 +2174,7 @@ fare_group
 
 ```python
 test['FareBin'] = pd.cut(test['Fare'], bins=fare_bin, include_lowest=True)
+test['FareBin'] = test['FareBin'].astype(str)
 
 fare_bin_map = {v: k for k, v in fare_group.to_dict()['FareBin'].items()}
 fare_bin_map
@@ -2109,7 +2183,7 @@ fare_bin_map
 
 
 
-    {'(14.454, 31]': 2, '(31, 512.329]': 3, '(7.91, 14.454]': 1, '[0, 7.91]': 0}
+    {'(14.454, 31]': 0, '(31, 512.329]': 1, '(7.91, 14.454]': 2, '[0, 7.91]': 3}
 
 
 
@@ -2154,7 +2228,7 @@ train.head(10)
       <td>0</td>
       <td>1</td>
       <td>A/5 21171</td>
-      <td>0</td>
+      <td>3</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2167,7 +2241,7 @@ train.head(10)
       <td>1</td>
       <td>2</td>
       <td>PC 17599</td>
-      <td>3</td>
+      <td>1</td>
       <td>C85</td>
       <td>1</td>
       <td>0</td>
@@ -2180,7 +2254,7 @@ train.head(10)
       <td>1</td>
       <td>1</td>
       <td>STON/O2. 3101282</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>1</td>
@@ -2193,7 +2267,7 @@ train.head(10)
       <td>1</td>
       <td>2</td>
       <td>113803</td>
-      <td>3</td>
+      <td>1</td>
       <td>C123</td>
       <td>0</td>
       <td>0</td>
@@ -2206,7 +2280,7 @@ train.head(10)
       <td>0</td>
       <td>2</td>
       <td>373450</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>1</td>
@@ -2219,7 +2293,7 @@ train.head(10)
       <td>0</td>
       <td>1</td>
       <td>330877</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>2</td>
       <td>1</td>
@@ -2232,7 +2306,7 @@ train.head(10)
       <td>0</td>
       <td>3</td>
       <td>17463</td>
-      <td>3</td>
+      <td>1</td>
       <td>E46</td>
       <td>0</td>
       <td>1</td>
@@ -2245,7 +2319,7 @@ train.head(10)
       <td>0</td>
       <td>0</td>
       <td>349909</td>
-      <td>2</td>
+      <td>0</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2258,7 +2332,7 @@ train.head(10)
       <td>1</td>
       <td>1</td>
       <td>347742</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2271,7 +2345,7 @@ train.head(10)
       <td>1</td>
       <td>0</td>
       <td>237736</td>
-      <td>2</td>
+      <td>0</td>
       <td>NaN</td>
       <td>1</td>
       <td>0</td>
@@ -2316,7 +2390,7 @@ test.head(10)
       <td>0</td>
       <td>2</td>
       <td>330911</td>
-      <td>0</td>
+      <td>3</td>
       <td>NaN</td>
       <td>2</td>
       <td>1</td>
@@ -2329,7 +2403,7 @@ test.head(10)
       <td>1</td>
       <td>2</td>
       <td>363272</td>
-      <td>0</td>
+      <td>3</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2342,7 +2416,7 @@ test.head(10)
       <td>0</td>
       <td>3</td>
       <td>240276</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>2</td>
       <td>1</td>
@@ -2355,7 +2429,7 @@ test.head(10)
       <td>0</td>
       <td>1</td>
       <td>315154</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>1</td>
@@ -2368,7 +2442,7 @@ test.head(10)
       <td>1</td>
       <td>1</td>
       <td>3101298</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2381,7 +2455,7 @@ test.head(10)
       <td>0</td>
       <td>0</td>
       <td>7538</td>
-      <td>1</td>
+      <td>2</td>
       <td>NaN</td>
       <td>0</td>
       <td>1</td>
@@ -2394,7 +2468,7 @@ test.head(10)
       <td>1</td>
       <td>1</td>
       <td>330972</td>
-      <td>0</td>
+      <td>3</td>
       <td>NaN</td>
       <td>2</td>
       <td>1</td>
@@ -2407,7 +2481,7 @@ test.head(10)
       <td>0</td>
       <td>1</td>
       <td>248738</td>
-      <td>2</td>
+      <td>0</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2420,7 +2494,7 @@ test.head(10)
       <td>1</td>
       <td>1</td>
       <td>2657</td>
-      <td>0</td>
+      <td>3</td>
       <td>NaN</td>
       <td>1</td>
       <td>1</td>
@@ -2433,7 +2507,7 @@ test.head(10)
       <td>0</td>
       <td>1</td>
       <td>A/4 48871</td>
-      <td>2</td>
+      <td>0</td>
       <td>NaN</td>
       <td>0</td>
       <td>0</td>
@@ -2480,12 +2554,12 @@ sns.heatmap(
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x16bbd65f8>
+    <matplotlib.axes._subplots.AxesSubplot at 0x117c9e8d0>
 
 
 
 
-![png](output_71_1.png)
+![png](output_73_1.png)
 
 
 ### Modeling
@@ -2511,7 +2585,7 @@ logreg_accuracy
 
 
 
-    81.140000000000001
+    81.260000000000005
 
 
 
@@ -2551,14 +2625,10 @@ svm_accuracy = round(svm_clf.score(X_train, Y_train) * 100, 2)
 svm_accuracy
 ```
 
-    WARNING: Output cache limit (currently 1000 entries) hit.
-    Flushing oldest 200 entries.
 
 
 
-
-
-    82.939999999999998
+    82.150000000000006
 
 
 
@@ -2591,7 +2661,7 @@ tree_accuracy
 
 
 
-    83.609999999999999
+    83.5
 
 
 
@@ -2620,7 +2690,7 @@ Image(graph.create_png())
 
 
 
-![png](output_82_0.png)
+![png](output_84_0.png)
 
 
 
@@ -2702,7 +2772,7 @@ models.sort_values(by='Score', ascending=False)
     <tr>
       <th>1</th>
       <td>Supprt Vector Machine</td>
-      <td>82.94</td>
+      <td>82.15</td>
       <td>0.78947</td>
     </tr>
     <tr>
@@ -2714,13 +2784,13 @@ models.sort_values(by='Score', ascending=False)
     <tr>
       <th>2</th>
       <td>Decision Tree</td>
-      <td>83.61</td>
+      <td>83.50</td>
       <td>0.77033</td>
     </tr>
     <tr>
       <th>0</th>
       <td>Logistic Regression</td>
-      <td>81.14</td>
+      <td>81.26</td>
       <td>0.76555</td>
     </tr>
   </tbody>
