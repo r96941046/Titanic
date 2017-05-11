@@ -376,10 +376,10 @@ train.describe(include=['O'])
     </tr>
     <tr>
       <th>top</th>
-      <td>Carter, Mrs. Ernest Courtenay (Lilian Hughes)</td>
+      <td>Frolicher, Miss. Hedwig Margaritha</td>
       <td>male</td>
-      <td>1601</td>
-      <td>C23 C25 C27</td>
+      <td>347082</td>
+      <td>G6</td>
       <td>S</td>
     </tr>
     <tr>
@@ -417,7 +417,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x115ebf4a8>
+    <seaborn.axisgrid.FacetGrid at 0x11b0aa0f0>
 
 
 
@@ -509,7 +509,7 @@ grid_1.map(plt.hist, 'Age', bins=20)
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x108e0aeb8>
+    <seaborn.axisgrid.FacetGrid at 0x11d5fc630>
 
 
 
@@ -536,7 +536,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x1164d1a58>
+    <seaborn.axisgrid.FacetGrid at 0x11d634320>
 
 
 
@@ -715,7 +715,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x115eb6cf8>
+    <seaborn.axisgrid.FacetGrid at 0x11e026dd8>
 
 
 
@@ -829,7 +829,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x1169022b0>
+    <seaborn.axisgrid.FacetGrid at 0x11e09c2e8>
 
 
 
@@ -1171,7 +1171,7 @@ facet.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x116b88b38>
+    <seaborn.axisgrid.FacetGrid at 0x11e370c88>
 
 
 
@@ -1189,7 +1189,7 @@ grid_3.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x116adfa90>
+    <seaborn.axisgrid.FacetGrid at 0x11e2e7518>
 
 
 
@@ -1860,7 +1860,7 @@ grid_4.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x1177d5e48>
+    <seaborn.axisgrid.FacetGrid at 0x11eff04a8>
 
 
 
@@ -1878,7 +1878,7 @@ grid_5.add_legend()
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x1177d5be0>
+    <seaborn.axisgrid.FacetGrid at 0x11f129048>
 
 
 
@@ -1937,7 +1937,7 @@ sns.factorplot(
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x1178c13c8>
+    <seaborn.axisgrid.FacetGrid at 0x11f4d0b70>
 
 
 
@@ -2554,7 +2554,7 @@ sns.heatmap(
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x117c9e8d0>
+    <matplotlib.axes._subplots.AxesSubplot at 0x11efe92e8>
 
 
 
@@ -2665,12 +2665,12 @@ tree_accuracy
 
 
 
+- Draw the Decision Tree
+- The result tells us that title has the most information gain in the first level of the tree
+- How to interpret the graph: http://www.techtrek.io/machine-learning-part-2-visualizing-a-decision-tree/
+
 
 ```python
-# Draw the Decision Tree
-# The result tells us that title has the most information gain in the first level of the tree
-# How to interpret the graph: http://www.techtrek.io/machine-learning-part-2-visualizing-a-decision-tree/
-
 import pydotplus
 from IPython.display import Image
 
@@ -2690,7 +2690,7 @@ Image(graph.create_png())
 
 
 
-![png](output_84_0.png)
+![png](output_85_0.png)
 
 
 
@@ -2729,6 +2729,44 @@ forest_accuracy
     86.760000000000005
 
 
+
+
+```python
+importances = forest_clf.feature_importances_
+print(importances)
+importance_rank = np.argsort(importances)[::-1]
+```
+
+    [ 0.17672101  0.22831623  0.10399382  0.12212439  0.06761081  0.03678045
+      0.26445329]
+
+
+
+```python
+sns.barplot(
+    x='Features',
+    y='Importance',
+    data=pd.DataFrame(
+        {
+            'Features': list(train.columns[1:]),
+            'Importance': [importances[r] for r in importance_rank]
+        }
+    )
+)
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1207e76d8>
+
+
+
+
+![png](output_90_1.png)
+
+
+From Random Forest, Pclass and gender are among the most important features of survival
 
 
 ```python
